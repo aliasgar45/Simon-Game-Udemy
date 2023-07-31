@@ -1,0 +1,6 @@
+.card {
+  min-height: 100vh;
+  max-width: min(90%, 1512px);
+  margin-inline: auto;
+  margin-bottom: 2rem;
+}

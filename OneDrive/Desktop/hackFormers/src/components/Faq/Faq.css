@@ -1,0 +1,76 @@
+h1 {
+  color: white;
+}
+.heading {
+  font-family: JetBrains Mono;
+  font-size: 56px;
+  margin-bottom: 10px;
+}
+.faq_container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: min(100% - 2rem, 1250px);
+  margin-inline: auto;
+}
+
+.child {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: left;
+  color: azure;
+}
+
+.accordion {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.item {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border-bottom: 1px dotted white;
+}
+
+.title {
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-family: JetBrains Mono;
+}
+
+.content {
+  color: white;
+  display: none;
+  margin-top: 25px;
+  font-size: 1.2rem;
+  font-family: JetBrains Mono;
+  line-height: 2;
+}
+
+.content.showItem {
+  color: white;
+  display: block;
+  margin-bottom: 25px;
+  font-family: JetBrains Mono;
+}
+
+.cross {
+  font-size: 2rem;
+}
+
+@media screen and (max-width: 800px) {
+  .title {
+    font-size: 0.7rem;
+  }
+  .content {
+    font-size: 0.8rem;
+  }
+}

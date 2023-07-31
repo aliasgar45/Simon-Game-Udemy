@@ -1,0 +1,76 @@
+image: node:18.4.0
+
+pipelines:
+  branches:
+    staging:
+      - step:
+          name: Running build process
+          script:
+            - rm -rf node_modules
+            - rm -rf yarn.lock
+            - rm -rf package-lock.json
+            - npm install
+            - npm run build:staging --verbose
+          after-script:
+            - cat /root/.npm/_logs/*
+          artifacts:
+            - build/**
+          max-time: 15
+      - step:
+          name: Deploy to S3
+          script:
+            - pipe: atlassian/aws-s3-deploy:0.3.8
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID_STAGING
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY_STAGING
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION_STAGING
+                S3_BUCKET: $S3_CRM_DESKTOP_STAGING
+                LOCAL_PATH: 'build'
+                ACL: 'public-read'
+            - /bin/bash notify-deployment.sh staging $NOTIFY_TOKEN
+      - step:
+          name: aws-cloudfront-invalidate
+          script:
+            - pipe: atlassian/aws-cloudfront-invalidate:0.4.0
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID_STAGING
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY_STAGING
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION_STAGING
+                DISTRIBUTION_ID: <DISTRIBUTION_ID>
+            - /bin/bash notify-deployment.sh staging $NOTIFY_TOKEN
+    master-deploy:
+      - step:
+          name: Running build process
+          script:
+            - rm -rf node_modules
+            - rm -rf yarn.lock
+            - rm -rf package-lock.json
+            - npm install
+            - npm run build --verbose
+          after-script:
+            - cat /root/.npm/_logs/*
+          artifacts:
+            - build/**
+          max-time: 15
+      - step:
+          name: Deploy to S3
+          script:
+            - pipe: atlassian/aws-s3-deploy:0.3.8
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID_PRODUCTION
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY_PRODUCTION
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION_PRODUCTION
+                S3_BUCKET: $S3_CRM_DESKTOP_PRODUCTION
+                LOCAL_PATH: 'build'
+                ACL: 'public-read'
+            - /bin/bash notify-deployment.sh master-deploy $NOTIFY_TOKEN
+      - step:
+          name: aws-cloudfront-invalidate
+          script:
+            - pipe: atlassian/aws-cloudfront-invalidate:0.4.0
+              variables:
+                AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID_PRODUCTION
+                AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY_PRODUCTION
+                AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION_PRODUCTION
+                DISTRIBUTION_ID: $AWS_CLOUDFRONT_DISTRIBUTION_ID
+            - /bin/bash notify-deployment.sh master-deploy $NOTIFY_TOKEN

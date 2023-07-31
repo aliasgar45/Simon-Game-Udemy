@@ -1,0 +1,45 @@
+.countdown {
+  width: min(100%, 640px);
+  display: flex;
+  align-items: center;
+  text-shadow: 2.02971px 2.02971px 20.2971px rgba(255, 255, 255, 0.5);
+  justify-content: center;
+  gap: 3rem;
+  /* display: grid; */
+  /* grid-template-columns: repeat(4, 1fr); */
+  color: white;
+  margin-top: 3rem;
+  text-align: center;
+  font-family: "JetBrains mono";
+}
+.mssg {
+  width: min(100%, 640px);
+  font-size: 1.2rem;
+  color: white;
+  text-shadow: 2.02971px 2.02971px 20.2971px rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin-top: 2rem;
+}
+.mssg::before,
+.mssg::after {
+  content: "-----";
+}
+
+.day,
+.hour,
+.min,
+.sec {
+  font-size: 3rem;
+}
+
+@media only screen and (max-width: 600px) {
+  .countdown {
+    gap: 2rem;
+  }
+  .day,
+  .hour,
+  .min,
+  .sec {
+    font-size: 2rem;
+  }
+}
